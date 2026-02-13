@@ -1,0 +1,180 @@
+@use "../../styles/variables" as *;
+
+.hero-search {
+  position: relative;
+  background: url("/hero-image.jpg") center/cover no-repeat;
+  padding: 100px 20px;
+  display: flex;
+  // border-radius: 15px;
+  justify-content: center;
+
+  &__overlay {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__container {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+  }
+
+  /* Heading */
+  &__heading {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #fff;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Tabs */
+  &__tabs {
+    background: #fff;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid $gray-300;
+    display: flex;
+    justify-content: space-around;
+    padding: 18px 20px 0 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  &__tab-wrapper {
+    position: relative;
+  }
+
+  &__tab {
+    background: none;
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 0;
+    cursor: pointer;
+    position: relative;
+    opacity: 0.7;
+    transition: 0.2s ease;
+
+    &:hover {
+      // opacity: 4;
+      color: $primary-blue;
+    }
+
+    &--active {
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    &--active::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      border-radius: 2px;
+      // background: currentColor;
+    }
+  }
+
+  /* Dropdown */
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    min-width: 220px;
+    padding: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: 0.2s ease;
+    z-index: 20;
+  }
+
+  &__dropdown-item {
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+      background: $gray-300;
+    }
+  }
+
+  /* Hover trigger */
+  &__tab-wrapper:hover &__dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Search Box */
+  &__search-box {
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    padding: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  }
+
+  &__input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #d7dae3;
+    border-radius: 40px;
+    padding: 8px 8px 8px 18px;
+
+    &:hover {
+      background: $gray-300;
+    }
+  }
+
+  &__search-icon {
+    font-size: 14px;
+    margin-right: 10px;
+    opacity: 0.6;
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    outline: none;
+  }
+
+  &__filters-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 30px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: 0.2s ease;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+
+  &__search-btn {
+    border: none;
+    background-color: $primary-blue;
+    color: $white;
+    border-radius: 30px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+    &:hover {
+      background: $primary-light;
+    }
+  }
+}
