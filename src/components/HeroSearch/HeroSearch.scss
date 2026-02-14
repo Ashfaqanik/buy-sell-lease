@@ -3,10 +3,13 @@
 .hero-search {
   position: relative;
   background: url("/hero-image.jpg") center/cover no-repeat;
-  padding: 100px 20px;
+  padding: 60px 16px;
   display: flex;
-  // border-radius: 15px;
   justify-content: center;
+
+  @media (min-width: 768px) {
+    padding: 100px 20px;
+  }
 
   &__overlay {
     width: 100%;
@@ -22,11 +25,17 @@
 
   /* Heading */
   &__heading {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 600;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     color: #fff;
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    line-height: 1.3;
+
+    @media (min-width: 768px) {
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
   }
 
   /* Tabs */
@@ -35,9 +44,16 @@
     border-radius: 12px 12px 0 0;
     border-bottom: 1px solid $gray-300;
     display: flex;
-    justify-content: space-around;
-    padding: 18px 20px 0 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px 8px 0 8px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+    @media (min-width: 768px) {
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      padding: 18px 20px 0 20px;
+    }
   }
 
   &__tab-wrapper {
@@ -47,16 +63,21 @@
   &__tab {
     background: none;
     border: none;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 500;
-    padding: 10px 0;
+    padding: 8px 12px;
     cursor: pointer;
     position: relative;
     opacity: 0.7;
     transition: 0.2s ease;
+    white-space: nowrap;
+
+    @media (min-width: 768px) {
+      font-size: 15px;
+      padding: 10px 0;
+    }
 
     &:hover {
-      // opacity: 4;
       color: $primary-blue;
     }
 
@@ -73,7 +94,6 @@
       width: 100%;
       height: 3px;
       border-radius: 2px;
-      // background: currentColor;
     }
   }
 
@@ -83,7 +103,8 @@
     top: 100%;
     left: 0;
     background: #fff;
-    min-width: 220px;
+    min-width: 200px;
+    max-width: 90vw;
     padding: 15px 0;
     border-radius: 8px;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
@@ -92,6 +113,10 @@
     transform: translateY(10px);
     transition: 0.2s ease;
     z-index: 20;
+
+    @media (min-width: 768px) {
+      min-width: 220px;
+    }
   }
 
   &__dropdown-item {
@@ -115,8 +140,12 @@
   &__search-box {
     background: #fff;
     border-radius: 0 0 12px 12px;
-    padding: 20px;
+    padding: 16px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+
+    @media (min-width: 768px) {
+      padding: 20px;
+    }
   }
 
   &__input-wrapper {
@@ -124,7 +153,15 @@
     align-items: center;
     background: #d7dae3;
     border-radius: 40px;
-    padding: 8px 8px 8px 18px;
+    padding: 6px 6px 6px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    @media (min-width: 768px) {
+      flex-wrap: nowrap;
+      padding: 8px 8px 8px 18px;
+      gap: 0;
+    }
 
     &:hover {
       background: $gray-300;
@@ -133,16 +170,36 @@
 
   &__search-icon {
     font-size: 14px;
-    margin-right: 10px;
+    margin-right: 8px;
     opacity: 0.6;
+    flex-shrink: 0;
+
+    @media (min-width: 768px) {
+      margin-right: 10px;
+    }
   }
 
   &__input {
     flex: 1;
     border: none;
     background: transparent;
-    font-size: 15px;
+    font-size: 14px;
     outline: none;
+    min-width: 0;
+    padding: 8px 0;
+
+    @media (min-width: 768px) {
+      font-size: 15px;
+      padding: 0;
+    }
+
+    &::placeholder {
+      font-size: 13px;
+
+      @media (min-width: 768px) {
+        font-size: 15px;
+      }
+    }
   }
 
   &__filters-btn {
@@ -152,11 +209,18 @@
     border: 1px solid #ddd;
     background: #fff;
     border-radius: 30px;
-    padding: 8px 18px;
-    font-size: 14px;
+    padding: 8px 14px;
+    font-size: 13px;
     cursor: pointer;
-    margin-right: 10px;
     transition: 0.2s ease;
+    order: 2;
+
+    @media (min-width: 768px) {
+      padding: 8px 18px;
+      font-size: 14px;
+      margin-right: 10px;
+      order: 0;
+    }
 
     &:hover {
       background: #f0f0f0;
@@ -168,11 +232,22 @@
     background-color: $primary-blue;
     color: $white;
     border-radius: 30px;
-    padding: 10px 24px;
+    padding: 10px 20px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s ease;
+    order: 3;
+    width: 100%;
+    margin-top: 8px;
+
+    @media (min-width: 768px) {
+      padding: 10px 24px;
+      order: 0;
+      width: auto;
+      margin-top: 0;
+    }
+
     &:hover {
       background: $primary-light;
     }
