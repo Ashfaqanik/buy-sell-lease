@@ -53,13 +53,13 @@ const RegisterStep1 = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // if (!validateForm()) return;
+    if (!validateForm()) return;
 
-    // setIsLoading(true);
-    // console.log("Registration step 1:", {
-    //   email: formData.email,
-    //   password: formData.password,
-    // });
+    setIsLoading(true);
+    console.log("Registration step 1:", {
+      email: formData.email,
+      password: formData.password,
+    });
 
     setTimeout(() => {
       setIsLoading(false);
@@ -153,7 +153,7 @@ const RegisterStep1 = () => {
           <button
             type="submit"
             className="register-step1__submit"
-            // disabled={isLoading || !allRequirementsMet}
+            disabled={isLoading || !allRequirementsMet}
           >
             {isLoading ? "Creating Account..." : "Continue"}
           </button>

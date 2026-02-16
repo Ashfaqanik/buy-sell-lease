@@ -1,10 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  FaTimes,
-  FaSearch,
-  FaChevronDown,
-  FaChevronRight,
-} from "react-icons/fa";
+import { FaTimes, FaSearch, FaChevronDown } from "react-icons/fa";
 import "./FilterModal.scss";
 
 interface FilterModalProps {
@@ -53,7 +48,6 @@ const FilterModal = ({
   const [propertyCategory, setPropertyCategory] = useState<
     "residential" | "commercial"
   >("residential");
-  const [expandedProperty, setExpandedProperty] = useState<string | null>(null);
   const [includeNearby, setIncludeNearby] = useState(false);
 
   const [expandedSection, setExpandedSection] = useState<string | null>(
@@ -161,7 +155,6 @@ const FilterModal = ({
     { value: "Leased", label: "Leased" },
   ];
 
-  // Updated bed options with Studio first
   const bedOptions = ["Any", "Studio", "1", "2", "3", "4", "5+"];
 
   useEffect(() => {
@@ -286,7 +279,6 @@ const FilterModal = ({
     setBeds("Any");
     setPropertyType("All types");
     setPropertyCategory("residential");
-    setExpandedProperty(null);
     setIncludeNearby(false);
   };
 
@@ -296,12 +288,6 @@ const FilterModal = ({
     } else {
       setExpandedSection(expandedSection === section ? null : section);
     }
-  };
-
-  const toggleProperty = (propertyName: string) => {
-    setExpandedProperty(
-      expandedProperty === propertyName ? null : propertyName,
-    );
   };
 
   const handlePropertySelect = (typeName: string, subtype?: string) => {
@@ -583,7 +569,6 @@ const FilterModal = ({
                     onClick={() => {
                       setPropertyCategory("residential");
                       setPropertyType("All types");
-                      setExpandedProperty(null);
                     }}
                   >
                     Residential
@@ -593,7 +578,6 @@ const FilterModal = ({
                     onClick={() => {
                       setPropertyCategory("commercial");
                       setPropertyType("All");
-                      setExpandedProperty(null);
                     }}
                   >
                     Commercial
