@@ -37,8 +37,8 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  { label: "FIND A REAL ESTATE SERVICE", path: "/services" },
-  { label: "TOOLS FOR AGENTS", path: "/tools" },
+  { label: "FIND A REAL ESTATE SERVICE", path: "/find-services" },
+  { label: "TOOLS FOR AGENTS", path: "/tools-for-agents" },
   { label: "ADVERTISE", path: "/advertise" },
   { label: "FIND A REAL ESTATE JOB", path: "/jobs" },
   { label: "BLOGS", path: "/blog" },
@@ -110,7 +110,7 @@ const Navbar = () => {
 
           {/* Right Side Actions */}
           <div className="navbar__actions">
-            <Link to="/login" className="navbar__login-btn">
+            <Link to="/sign-in" className="navbar__login-btn">
               <FaUser size={18} />
               <span>JOIN / LOGIN</span>
             </Link>

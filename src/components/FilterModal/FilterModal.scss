@@ -385,6 +385,53 @@
     padding: 0 $spacing-2;
   }
 
+  // NEW: $15M+ Button Styles
+  &__price-above {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    margin: $spacing-4 0;
+    padding: $spacing-3;
+    background-color: $gray-50;
+    border-radius: $border-radius-md;
+    border: 1px solid $border-color;
+  }
+
+  &__price-above-btn {
+    padding: $spacing-2 $spacing-4;
+    background-color: $white;
+    border: 2px solid $border-color;
+    border-radius: $border-radius-md;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    cursor: pointer;
+    transition: all $transition-fast;
+    white-space: nowrap;
+
+    &:hover {
+      border-color: $primary-blue;
+      color: $primary-blue;
+    }
+
+    &--active {
+      background-color: $primary-blue;
+      border-color: $primary-blue;
+      color: $white;
+
+      &:hover {
+        background-color: $primary-blue;
+        color: $white;
+      }
+    }
+  }
+
+  &__price-above-label {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    flex: 1;
+  }
+
   &__price-note {
     font-size: $font-size-xs;
     color: $text-muted;

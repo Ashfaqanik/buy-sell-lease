@@ -1,0 +1,50 @@
+@use "../../styles/variables" as *;
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+
+  &__logo {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    text-decoration: none;
+
+    img {
+      height: 42px;
+      display: block;
+      margin-right: 12px;
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 0;
+  }
+
+  &__tab {
+    padding: 16px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    margin-bottom: -1px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #333;
+    }
+
+    &.active {
+      color: #0066cc;
+      border-bottom-color: #0066cc;
+      font-weight: 500;
+    }
+  }
+}

@@ -8,26 +8,38 @@ type SearchTab = "buy" | "rent" | "sold" | "services";
 const tabs: { id: SearchTab; label: string }[] = [
   { id: "buy", label: "BUY" },
   { id: "rent", label: "LEASE" },
-  { id: "sold", label: "SOLD" },
+  { id: "sold", label: "SOLD/LEASED" },
   { id: "services", label: "YOUR REAL ESTATE SERVICES" },
 ];
 
 const tabDropdowns: Record<SearchTab, string[]> = {
-  buy: ["Residential", "Commercial", "Land", "Rural"],
+  buy: ["Residential", "Commercial"],
   rent: ["Residential Rentals", "Commercial Leasing"],
-  sold: ["Recent Sales", "Sales History"],
-  services: ["Conveyancer", "Mortgage Broker", "Valuer", "Building Inspector"],
+  sold: ["Sold", "Leased"],
+  services: [
+    "Conveyancer",
+    "Mortgage Broker",
+    "Valuer",
+    "Landlord and Property Insurance",
+    "Buyers Agents",
+    "Building Inspector",
+    "Surveyors/Depreciation Reports",
+    "Removalists and Storage",
+    "Pest and Building Inspectors",
+    "Gardening and Landscape",
+    "Rubbish removal and Skip Bins",
+    "Painters",
+    "Locksmiths",
+    "Utility Connection and Supply",
+  ],
 };
 
 const HeroSearch = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  // const [activeTab, setActiveTab] = useState<SearchTab>("buy");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
-    //
     e.preventDefault();
-    // console.log("Searching:", { type: activeTab, query: searchQuery });
   };
 
   return (
@@ -37,7 +49,7 @@ const HeroSearch = () => {
           <div className="hero-search__container">
             {/* Heading */}
             <h1 className="hero-search__heading">
-              “Everything real estate, under one roof!”
+              "Everything real estate, under one roof!"
             </h1>
 
             {/* Tabs */}
@@ -64,7 +76,8 @@ const HeroSearch = () => {
 
             {/* Search Box */}
             <form onSubmit={handleSearch} className="hero-search__search-box">
-              <div className="hero-search__input-wrapper">
+              {/* Desktop */}
+              <div className="hero-search__input-wrapper desktop-only">
                 <FaSearch size={18} className="hero-search__search-icon" />
 
                 <input
@@ -85,6 +98,36 @@ const HeroSearch = () => {
                 </button>
 
                 <button type="submit" className="hero-search__search-btn">
+                  Search
+                </button>
+              </div>
+
+              {/* Mobile */}
+              <div className="hero-search__mobile-stack mobile-only">
+                <div className="hero-search__input-row">
+                  <FaSearch size={18} className="hero-search__search-icon" />
+                  <input
+                    type="text"
+                    className="hero-search__input"
+                    placeholder="Search suburb, postcode or state"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsFilterOpen(true)}
+                  className="hero-search__filters-btn-mobile"
+                >
+                  <FaSlidersH />
+                  <span>Filters</span>
+                </button>
+
+                <button
+                  type="submit"
+                  className="hero-search__search-btn-mobile"
+                >
                   Search
                 </button>
               </div>

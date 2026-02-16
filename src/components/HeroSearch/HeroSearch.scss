@@ -6,9 +6,13 @@
   padding: 60px 16px;
   display: flex;
   justify-content: center;
+  max-width: 1400px;
+  margin: auto;
 
   @media (min-width: 768px) {
     padding: 100px 20px;
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   &__overlay {
@@ -148,20 +152,52 @@
     }
   }
 
+  /* Desktop*/
+  .desktop-only {
+    display: none;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
+  }
+
+  /* Mobile o*/
+  .mobile-only {
+    display: flex;
+
+    @media (min-width: 768px) {
+      display: none;
+    }
+  }
+
+  /* Desktop layout */
   &__input-wrapper {
     display: flex;
     align-items: center;
     background: #d7dae3;
     border-radius: 40px;
-    padding: 6px 6px 6px 14px;
-    flex-wrap: wrap;
-    gap: 8px;
+    padding: 8px 8px 8px 18px;
+    gap: 0;
 
-    @media (min-width: 768px) {
-      flex-wrap: nowrap;
-      padding: 8px 8px 8px 18px;
-      gap: 0;
+    &:hover {
+      background: $gray-300;
     }
+  }
+
+  /* Mobile stacked layout */
+  &__mobile-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Mobile search input row */
+  &__input-row {
+    display: flex;
+    align-items: center;
+    background: #d7dae3;
+    border-radius: 40px;
+    padding: 12px 16px;
 
     &:hover {
       background: $gray-300;
@@ -169,84 +205,95 @@
   }
 
   &__search-icon {
-    font-size: 14px;
-    margin-right: 8px;
+    font-size: 18px;
+    margin-right: 12px;
     opacity: 0.6;
     flex-shrink: 0;
-
-    @media (min-width: 768px) {
-      margin-right: 10px;
-    }
   }
 
   &__input {
     flex: 1;
     border: none;
     background: transparent;
-    font-size: 14px;
+    font-size: 15px;
     outline: none;
     min-width: 0;
-    padding: 8px 0;
-
-    @media (min-width: 768px) {
-      font-size: 15px;
-      padding: 0;
-    }
 
     &::placeholder {
-      font-size: 13px;
-
-      @media (min-width: 768px) {
-        font-size: 15px;
-      }
+      font-size: 14px;
+      color: #666;
     }
   }
 
+  /* Desktop filter button */
   &__filters-btn {
     display: flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid #ddd;
+    border: 1px solid #5e5b5b;
     background: #fff;
     border-radius: 30px;
-    padding: 8px 14px;
-    font-size: 13px;
+    padding: 8px 18px;
+    font-size: 14px;
     cursor: pointer;
     transition: 0.2s ease;
-    order: 2;
-
-    @media (min-width: 768px) {
-      padding: 8px 18px;
-      font-size: 14px;
-      margin-right: 10px;
-      order: 0;
-    }
+    margin-right: 10px;
+    margin-left: 8px;
 
     &:hover {
       background: #f0f0f0;
     }
   }
 
+  /* Mobile filter button*/
+  &__filters-btn-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid #5e5b5b;
+    background: #fff;
+    border-radius: 30px;
+    padding: 10px 24px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    width: 100%;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+
+  /* Desktop search button */
   &__search-btn {
     border: none;
     background-color: $primary-blue;
     color: $white;
     border-radius: 30px;
-    padding: 10px 20px;
+    padding: 10px 24px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s ease;
-    order: 3;
-    width: 100%;
-    margin-top: 8px;
 
-    @media (min-width: 768px) {
-      padding: 10px 24px;
-      order: 0;
-      width: auto;
-      margin-top: 0;
+    &:hover {
+      background: $primary-light;
     }
+  }
+
+  /* Mobile search button*/
+  &__search-btn-mobile {
+    border: none;
+    background-color: $primary-blue;
+    color: $white;
+    border-radius: 30px;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+    width: 100%;
 
     &:hover {
       background: $primary-light;

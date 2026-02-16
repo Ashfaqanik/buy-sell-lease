@@ -1,7 +1,7 @@
-import Navbar from '../../components/Navbar/Navbar'
-import HeroSearch from '../../components/HeroSearch/HeroSearch'
-import Footer from '../../components/Footer/Footer'
-import './Home.scss'
+import Navbar from "../../components/Navbar/Navbar";
+import HeroSearch from "../../components/HeroSearch/HeroSearch";
+import Footer from "../../components/Footer/Footer";
+import "./Home.scss";
 
 const Home = () => {
   return (
@@ -20,7 +20,7 @@ const Home = () => {
             <div className="home__placeholder">
               <p>Property cards will be displayed here</p>
               <p className="home__placeholder-note">
-                (To be integrated with Hejani's backend API)
+                (To be integrated with backend API)
               </p>
             </div>
           </div>
@@ -35,17 +35,18 @@ const Home = () => {
             </p>
             <div className="home__services-grid">
               {[
-                'Conveyancer',
-                'Mortgage Broker',
-                'Property Valuer',
-                'Building Inspector',
-                'Removalist',
-                'Landscaper'
+                "Conveyancer",
+                "Mortgage Broker",
+                "Property Valuer",
+                "Building Inspector",
+                "Removalist",
+                "Landscaper",
               ].map((service) => (
                 <div key={service} className="home__service-card">
                   <h3 className="home__service-name">{service}</h3>
                   <p className="home__service-description">
-                    Professional {service.toLowerCase()} services for your real estate needs
+                    Professional {service.toLowerCase()} services for your real
+                    estate needs
                   </p>
                   <button className="home__service-btn">Find {service}s</button>
                 </div>
@@ -93,7 +94,8 @@ const Home = () => {
             <div className="home__cta-content">
               <h2 className="home__cta-title">Are you a Real Estate Agent?</h2>
               <p className="home__cta-text">
-                Join thousands of agents already using Buy Sell Lease to reach more buyers and sellers
+                Join thousands of agents already using Buy Sell Lease to reach
+                more buyers and sellers
               </p>
               <div className="home__cta-buttons">
                 <button className="home__cta-btn home__cta-btn--primary">
@@ -109,7 +111,7 @@ const Home = () => {
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

@@ -10,10 +10,10 @@ import "./FilterModal.scss";
 interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: "buy" | "lease" | "sold";
+  initialTab?: "buy" | "lease" | "sold" | "Leased";
 }
 
-type SearchType = "buy" | "lease" | "sold";
+type SearchType = "buy" | "lease" | "sold" | "Leased";
 
 interface Suburb {
   name: string;
@@ -37,12 +37,19 @@ const FilterModal = ({
   const [showSuburbDropdown, setShowSuburbDropdown] = useState(false);
   const [selectedSuburb, setSelectedSuburb] = useState<Suburb | null>(null);
 
+  // Price state - temp for editing, committed on Apply
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(46);
+  const [isAbove15M, setIsAbove15M] = useState(false);
+  // Temp state for editing in the dropdown
+  const [tempPriceMin, setTempPriceMin] = useState(0);
+  const [tempPriceMax, setTempPriceMax] = useState(46);
+  const [tempIsAbove15M, setTempIsAbove15M] = useState(false);
+
   const [isDragging, setIsDragging] = useState<"min" | "max" | null>(null);
 
   const [beds, setBeds] = useState("Any");
-  const [propertyType, setPropertyType] = useState("All");
+  const [propertyType, setPropertyType] = useState("All types");
   const [propertyCategory, setPropertyCategory] = useState<
     "residential" | "commercial"
   >("residential");
@@ -103,42 +110,19 @@ const FilterModal = ({
     "$10M",
     "$12M",
     "$15M",
-    "Any",
   ];
 
+  // Updated residential types based on feedback
   const residentialTypes: PropertyType[] = [
-    { name: "All", count: "(No of)" },
-    {
-      name: "House",
-      count: "(No of)",
-      subtypes: [
-        "Duplex",
-        "Free standing",
-        "Semi detached",
-        "Terrace",
-        "Villa",
-        "House and Land Package",
-        "New Home Designs",
-      ],
-    },
-    {
-      name: "Apartment",
-      count: "(No of)",
-      subtypes: [
-        "Apartment/Unit/Flat",
-        "Penthouse",
-        "Studio",
-        "Off the Plan/New Development",
-        "Block of Units",
-      ],
-    },
-    { name: "Townhouse", count: "(No of)" },
-    {
-      name: "Land",
-      count: "",
-      subtypes: ["Development Site", "New Land", "Vacant Land"],
-    },
-    { name: "Retirement", count: "" },
+    { name: "All types", count: "(No of)" },
+    { name: "House", count: "(No of)" },
+    { name: "Townhouse/Villa", count: "(No of)" },
+    { name: "Apartment/Unit", count: "(No of)" },
+    { name: "Retirement Living", count: "(No of)" },
+    { name: "Land", count: "(No of)" },
+    { name: "Acreage", count: "(No of)" },
+    { name: "Rural", count: "(No of)" },
+    { name: "Block of Units", count: "(No of)" },
   ];
 
   const commercialTypes: PropertyType[] = [
@@ -174,9 +158,11 @@ const FilterModal = ({
     { value: "buy", label: "Buy" },
     { value: "lease", label: "Lease" },
     { value: "sold", label: "Sold" },
+    { value: "Leased", label: "Leased" },
   ];
 
-  const bedOptions = ["Any", "1", "2", "3", "4", "5+"];
+  // Updated bed options with Studio first
+  const bedOptions = ["Any", "Studio", "1", "2", "3", "4", "5+"];
 
   useEffect(() => {
     if (location.length > 0 && !selectedSuburb) {
@@ -211,6 +197,7 @@ const FilterModal = ({
   const handleMouseDown = (handle: "min" | "max") => (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(handle);
+    setTempIsAbove15M(false);
   };
 
   const handleMouseMove = useCallback(
@@ -219,12 +206,13 @@ const FilterModal = ({
       const newIndex = getPriceFromPosition(e.clientX);
 
       if (isDragging === "min") {
-        setPriceMin(Math.min(newIndex, priceMax - 1));
+        setTempPriceMin(Math.min(newIndex, tempPriceMax - 1));
       } else {
-        setPriceMax(Math.max(newIndex, priceMin + 1));
+        setTempPriceMax(Math.max(newIndex, tempPriceMin + 1));
       }
+      setTempIsAbove15M(false);
     },
-    [isDragging, priceMin, priceMax, getPriceFromPosition],
+    [isDragging, tempPriceMin, tempPriceMax, getPriceFromPosition],
   );
 
   const handleMouseUp = useCallback(() => {
@@ -242,12 +230,41 @@ const FilterModal = ({
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
+  // Initialize temp values when opening price section
+  const handlePriceSectionOpen = () => {
+    setTempPriceMin(priceMin);
+    setTempPriceMax(priceMax);
+    setTempIsAbove15M(isAbove15M);
+    setExpandedSection("price");
+  };
+
+  const handleAbove15M = () => {
+    setTempIsAbove15M(true);
+    setTempPriceMin(priceScale.length - 1);
+    setTempPriceMax(priceScale.length - 1);
+  };
+
+  const handlePriceApply = () => {
+    setPriceMin(tempPriceMin);
+    setPriceMax(tempPriceMax);
+    setIsAbove15M(tempIsAbove15M);
+    setExpandedSection(null);
+  };
+
+  const handlePriceCancel = () => {
+    // Reset temp values to committed values
+    setTempPriceMin(priceMin);
+    setTempPriceMax(priceMax);
+    setTempIsAbove15M(isAbove15M);
+    setExpandedSection(null);
+  };
+
   const handleSearch = () => {
     console.log("Searching:", {
       searchType,
       location: selectedSuburb || location,
-      priceMin: priceScale[priceMin],
-      priceMax: priceScale[priceMax],
+      priceMin: isAbove15M ? "$15M+" : priceScale[priceMin],
+      priceMax: isAbove15M ? "$15M+" : priceScale[priceMax],
       beds,
       propertyType,
       propertyCategory,
@@ -262,15 +279,23 @@ const FilterModal = ({
     setSelectedSuburb(null);
     setPriceMin(0);
     setPriceMax(46);
+    setTempPriceMin(0);
+    setTempPriceMax(46);
+    setIsAbove15M(false);
+    setTempIsAbove15M(false);
     setBeds("Any");
-    setPropertyType("All");
+    setPropertyType("All types");
     setPropertyCategory("residential");
     setExpandedProperty(null);
     setIncludeNearby(false);
   };
 
   const toggleSection = (section: string) => {
-    setExpandedSection(expandedSection === section ? null : section);
+    if (section === "price" && expandedSection !== "price") {
+      handlePriceSectionOpen();
+    } else {
+      setExpandedSection(expandedSection === section ? null : section);
+    }
   };
 
   const toggleProperty = (propertyName: string) => {
@@ -289,8 +314,8 @@ const FilterModal = ({
 
   if (!isOpen) return null;
 
-  const minPercent = (priceMin / (priceScale.length - 1)) * 100;
-  const maxPercent = (priceMax / (priceScale.length - 1)) * 100;
+  const minPercent = (tempPriceMin / (priceScale.length - 1)) * 100;
+  const maxPercent = (tempPriceMax / (priceScale.length - 1)) * 100;
 
   const currentTypes =
     propertyCategory === "residential" ? residentialTypes : commercialTypes;
@@ -345,6 +370,7 @@ const FilterModal = ({
               )}
             </div>
           </div>
+
           {/* Location */}
           <div className="filter-modal__section">
             <label className="filter-modal__label">
@@ -399,7 +425,8 @@ const FilterModal = ({
               Include neighbouring suburbs
             </label>
           </div>
-          {/* Price with Drag Scale */}
+
+          {/* Price with Drag Scale - Temp state until Apply */}
           <div className="filter-modal__section">
             <button
               className="filter-modal__section-header"
@@ -407,7 +434,9 @@ const FilterModal = ({
             >
               <span>Price</span>
               <span className="filter-modal__section-value">
-                {priceScale[priceMin]} - {priceScale[priceMax]}
+                {isAbove15M
+                  ? "$15M+"
+                  : `${priceScale[priceMin]} - ${priceScale[priceMax]}`}
               </span>
               <FaChevronDown
                 className={`filter-modal__chevron ${expandedSection === "price" ? "filter-modal__chevron--up" : ""}`}
@@ -433,7 +462,7 @@ const FilterModal = ({
                     onMouseDown={handleMouseDown("min")}
                   >
                     <div className="filter-modal__price-tooltip">
-                      {priceScale[priceMin]}
+                      {priceScale[tempPriceMin]}
                     </div>
                   </div>
 
@@ -443,7 +472,7 @@ const FilterModal = ({
                     onMouseDown={handleMouseDown("max")}
                   >
                     <div className="filter-modal__price-tooltip">
-                      {priceScale[priceMax]}
+                      {priceScale[tempPriceMax]}
                     </div>
                   </div>
                 </div>
@@ -453,26 +482,36 @@ const FilterModal = ({
                   <span>$5M</span>
                   <span>$10M</span>
                   <span>$15M</span>
-                  <span>Any</span>
+                </div>
+
+                {/* $15M+ Button */}
+                <div className="filter-modal__price-above">
+                  <button
+                    className={`filter-modal__price-above-btn ${tempIsAbove15M ? "filter-modal__price-above-btn--active" : ""}`}
+                    onClick={handleAbove15M}
+                  >
+                    $15M+
+                  </button>
+                  <span className="filter-modal__price-above-label">
+                    For properties above $15 million
+                  </span>
                 </div>
 
                 <div className="filter-modal__price-note">
-                  Drag to set price range. Select "Any" for no limit.
+                  Drag to set price range or select $15M+ for luxury properties.
                 </div>
 
+                {/* Apply/Cancel buttons - required to save price */}
                 <div className="filter-modal__price-actions">
                   <button
                     className="filter-modal__btn-cancel"
-                    onClick={() => {
-                      setPriceMin(0);
-                      setPriceMax(46);
-                    }}
+                    onClick={handlePriceCancel}
                   >
                     Cancel
                   </button>
                   <button
                     className="filter-modal__btn-apply"
-                    onClick={() => setExpandedSection(null)}
+                    onClick={handlePriceApply}
                   >
                     Apply
                   </button>
@@ -480,7 +519,8 @@ const FilterModal = ({
               </div>
             )}
           </div>
-          {/* Beds */}
+
+          {/* Beds - Updated with Studio */}
           <div className="filter-modal__section">
             <button
               className="filter-modal__section-header"
@@ -488,7 +528,11 @@ const FilterModal = ({
             >
               <span>Beds</span>
               <span className="filter-modal__section-value">
-                {beds === "Any" ? "Any" : `${beds} beds`}
+                {beds === "Any"
+                  ? "Any"
+                  : beds === "Studio"
+                    ? "Studio"
+                    : `${beds} beds`}
               </span>
               <FaChevronDown
                 className={`filter-modal__chevron ${expandedSection === "beds" ? "filter-modal__chevron--up" : ""}`}
@@ -504,14 +548,19 @@ const FilterModal = ({
                       className={`filter-modal__option-btn ${beds === bed ? "filter-modal__option-btn--active" : ""}`}
                       onClick={() => setBeds(bed)}
                     >
-                      {bed === "Any" ? "Any" : `${bed}+`}
+                      {bed === "Any"
+                        ? "Any"
+                        : bed === "Studio"
+                          ? "Studio"
+                          : `${bed}+`}
                     </button>
                   ))}
                 </div>
               </div>
             )}
           </div>
-          {/* Property Type with Expandable Subtypes */}
+
+          {/* Property Type - Updated Residential List */}
           <div className="filter-modal__section">
             <button
               className="filter-modal__section-header"
@@ -533,7 +582,7 @@ const FilterModal = ({
                     className={`filter-modal__property-tab ${propertyCategory === "residential" ? "filter-modal__property-tab--active" : ""}`}
                     onClick={() => {
                       setPropertyCategory("residential");
-                      setPropertyType("All");
+                      setPropertyType("All types");
                       setExpandedProperty(null);
                     }}
                   >
@@ -558,14 +607,8 @@ const FilterModal = ({
                       className="filter-modal__property-item-wrapper"
                     >
                       <button
-                        className={`filter-modal__property-item ${propertyType === type.name && !type.subtypes?.includes(propertyType) ? "filter-modal__property-item--active" : ""}`}
-                        onClick={() => {
-                          if (type.subtypes && type.subtypes.length > 0) {
-                            toggleProperty(type.name);
-                          } else {
-                            handlePropertySelect(type.name);
-                          }
-                        }}
+                        className={`filter-modal__property-item ${propertyType === type.name ? "filter-modal__property-item--active" : ""}`}
+                        onClick={() => handlePropertySelect(type.name)}
                       >
                         <div className="filter-modal__property-main">
                           <span className="filter-modal__property-name">
@@ -575,30 +618,7 @@ const FilterModal = ({
                             {type.count}
                           </span>
                         </div>
-                        {type.subtypes && type.subtypes.length > 0 && (
-                          <FaChevronRight
-                            className={`filter-modal__property-arrow ${expandedProperty === type.name ? "filter-modal__property-arrow--down" : ""}`}
-                          />
-                        )}
                       </button>
-
-                      {/* Expandable Subtypes Dropdown */}
-                      {type.subtypes && expandedProperty === type.name && (
-                        <div className="filter-modal__subtype-dropdown">
-                          {type.subtypes.map((subtype) => (
-                            <button
-                              key={subtype}
-                              className={`filter-modal__subtype-item ${propertyType === subtype ? "filter-modal__subtype-item--active" : ""}`}
-                              onClick={() =>
-                                handlePropertySelect(type.name, subtype)
-                              }
-                            >
-                              <span className="filter-modal__subtype-dot"></span>
-                              {subtype}
-                            </button>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
