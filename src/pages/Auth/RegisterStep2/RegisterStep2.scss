@@ -1,4 +1,5 @@
 @use "../../../styles/variables" as *;
+@use "sass:color";
 
 .register-step2 {
   min-height: 100vh;
@@ -72,7 +73,8 @@
 
     &--selected {
       border-color: $primary-blue;
-      background: lighten($primary-blue, 45%);
+      background: color.adjust($primary-blue, $lightness: 45%);
+      // background: lighten($primary-blue, 45%);
     }
 
     &:disabled {
