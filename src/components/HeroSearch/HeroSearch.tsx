@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaSearch, FaSlidersH } from "react-icons/fa";
 import "./HeroSearch.scss";
 import FilterModal from "../FilterModal/FilterModal";
+import { useNavigate } from "react-router-dom";
 
 type SearchTab = "buy" | "rent" | "sold" | "services";
 
@@ -37,9 +38,25 @@ const tabDropdowns: Record<SearchTab, string[]> = {
 const HeroSearch = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<SearchTab>("buy");
+  const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (activeTab === "services") {
+      navigate(`/search/services?query=${encodeURIComponent(searchQuery)}`);
+      return;
+    }
+
+    const searchType =
+      activeTab === "rent" ? "lease" : activeTab === "sold" ? "sold" : "buy";
+
+    navigate(
+      `/search/properties?location=${encodeURIComponent(
+        searchQuery || "",
+      )}&searchType=${searchType}&category=residential`,
+    );
   };
 
   return (
@@ -56,7 +73,13 @@ const HeroSearch = () => {
             <div className="hero-search__tabs">
               {tabs.map((tab) => (
                 <div key={tab.id} className="hero-search__tab-wrapper">
-                  <button className="hero-search__tab">{tab.label}</button>
+                  <button
+                    type="button"
+                    className={`hero-search__tab ${activeTab === tab.id ? "hero-search__tab--active" : ""}`}
+                    onClick={() => setActiveTab(tab.id)}
+                  >
+                    {tab.label}
+                  </button>
 
                   {/* Dropdown */}
                   <div className="hero-search__dropdown">
@@ -64,7 +87,10 @@ const HeroSearch = () => {
                       <div
                         key={item}
                         className="hero-search__dropdown-item"
-                        onClick={() => setSearchQuery(item)}
+                        onClick={() => {
+                          setActiveTab(tab.id);
+                          setSearchQuery(item);
+                        }}
                       >
                         {item}
                       </div>

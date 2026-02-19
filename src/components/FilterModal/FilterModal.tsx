@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { FaTimes, FaSearch, FaChevronDown } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import "./FilterModal.scss";
 
 interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: "buy" | "lease" | "sold" | "Leased";
+  initialTab?: "buy" | "lease" | "sold" | "leased";
 }
 
-type SearchType = "buy" | "lease" | "sold" | "Leased";
+type SearchType = "buy" | "lease" | "sold" | "leased";
 
 interface Suburb {
   name: string;
@@ -27,15 +28,18 @@ const FilterModal = ({
   onClose,
   initialTab = "buy",
 }: FilterModalProps) => {
+  const navigate = useNavigate();
+
   const [searchType, setSearchType] = useState<SearchType>(initialTab);
   const [location, setLocation] = useState("");
   const [showSuburbDropdown, setShowSuburbDropdown] = useState(false);
   const [selectedSuburb, setSelectedSuburb] = useState<Suburb | null>(null);
 
-  // Price state - temp for editing, committed on Apply
+  // Price state - committed values
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(46);
   const [isAbove15M, setIsAbove15M] = useState(false);
+
   // Temp state for editing in the dropdown
   const [tempPriceMin, setTempPriceMin] = useState(0);
   const [tempPriceMax, setTempPriceMax] = useState(46);
@@ -106,7 +110,6 @@ const FilterModal = ({
     "$15M",
   ];
 
-  // Updated residential types based on feedback
   const residentialTypes: PropertyType[] = [
     { name: "All types", count: "(No of)" },
     { name: "House", count: "(No of)" },
@@ -152,7 +155,7 @@ const FilterModal = ({
     { value: "buy", label: "Buy" },
     { value: "lease", label: "Lease" },
     { value: "sold", label: "Sold" },
-    { value: "Leased", label: "Leased" },
+    { value: "leased", label: "Leased" },
   ];
 
   const bedOptions = ["Any", "Studio", "1", "2", "3", "4", "5+"];
@@ -176,16 +179,19 @@ const FilterModal = ({
     setSelectedSuburb(null);
   };
 
-  const getPriceFromPosition = useCallback((clientX: number) => {
-    if (!priceRulerRef.current) return 0;
-    const rect = priceRulerRef.current.getBoundingClientRect();
-    const percentage = Math.max(
-      0,
-      Math.min(1, (clientX - rect.left) / rect.width),
-    );
-    const index = Math.round(percentage * (priceScale.length - 1));
-    return index;
-  }, []);
+  const getPriceFromPosition = useCallback(
+    (clientX: number) => {
+      if (!priceRulerRef.current) return 0;
+      const rect = priceRulerRef.current.getBoundingClientRect();
+      const percentage = Math.max(
+        0,
+        Math.min(1, (clientX - rect.left) / rect.width),
+      );
+      const index = Math.round(percentage * (priceScale.length - 1));
+      return index;
+    },
+    [priceScale.length],
+  );
 
   const handleMouseDown = (handle: "min" | "max") => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -223,7 +229,6 @@ const FilterModal = ({
     };
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
-  // Initialize temp values when opening price section
   const handlePriceSectionOpen = () => {
     setTempPriceMin(priceMin);
     setTempPriceMax(priceMax);
@@ -245,37 +250,25 @@ const FilterModal = ({
   };
 
   const handlePriceCancel = () => {
-    // Reset temp values to committed values
     setTempPriceMin(priceMin);
     setTempPriceMax(priceMax);
     setTempIsAbove15M(isAbove15M);
     setExpandedSection(null);
   };
 
-  const handleSearch = () => {
-    console.log("Searching:", {
-      searchType,
-      location: selectedSuburb || location,
-      priceMin: isAbove15M ? "$15M+" : priceScale[priceMin],
-      priceMax: isAbove15M ? "$15M+" : priceScale[priceMax],
-      beds,
-      propertyType,
-      propertyCategory,
-      includeNearby,
-    });
-    onClose();
-  };
-
   const clearFilters = () => {
     setSearchType("buy");
     setLocation("");
     setSelectedSuburb(null);
+
     setPriceMin(0);
     setPriceMax(46);
     setTempPriceMin(0);
     setTempPriceMax(46);
+
     setIsAbove15M(false);
     setTempIsAbove15M(false);
+
     setBeds("Any");
     setPropertyType("All types");
     setPropertyCategory("residential");
@@ -291,11 +284,30 @@ const FilterModal = ({
   };
 
   const handlePropertySelect = (typeName: string, subtype?: string) => {
-    if (subtype) {
-      setPropertyType(subtype);
-    } else {
-      setPropertyType(typeName);
-    }
+    setPropertyType(subtype ? subtype : typeName);
+  };
+
+  const handleSearch = () => {
+    const locationValue = selectedSuburb
+      ? `${selectedSuburb.name}, ${selectedSuburb.state} ${selectedSuburb.postcode}`
+      : location;
+
+    const minLabel = tempIsAbove15M ? "$15M+" : priceScale[priceMin];
+    const maxLabel = tempIsAbove15M ? "$15M+" : priceScale[priceMax];
+
+    const params = new URLSearchParams();
+
+    if (locationValue) params.set("location", locationValue);
+    params.set("searchType", searchType);
+    params.set("category", propertyCategory);
+    params.set("propertyType", propertyType);
+    params.set("beds", beds);
+    params.set("min", minLabel);
+    params.set("max", maxLabel);
+    params.set("nearby", includeNearby ? "1" : "0");
+
+    navigate(`/search/properties?${params.toString()}`);
+    onClose();
   };
 
   if (!isOpen) return null;
@@ -412,7 +424,7 @@ const FilterModal = ({
             </label>
           </div>
 
-          {/* Price with Drag Scale - Temp state until Apply */}
+          {/* Price */}
           <div className="filter-modal__section">
             <button
               className="filter-modal__section-header"
@@ -470,7 +482,6 @@ const FilterModal = ({
                   <span>$15M</span>
                 </div>
 
-                {/* $15M+ Button */}
                 <div className="filter-modal__price-above">
                   <button
                     className={`filter-modal__price-above-btn ${tempIsAbove15M ? "filter-modal__price-above-btn--active" : ""}`}
@@ -487,7 +498,6 @@ const FilterModal = ({
                   Drag to set price range or select $15M+ for luxury properties.
                 </div>
 
-                {/* Apply/Cancel buttons - required to save price */}
                 <div className="filter-modal__price-actions">
                   <button
                     className="filter-modal__btn-cancel"
@@ -506,7 +516,7 @@ const FilterModal = ({
             )}
           </div>
 
-          {/* Beds - Updated with Studio */}
+          {/* Beds */}
           <div className="filter-modal__section">
             <button
               className="filter-modal__section-header"
@@ -546,7 +556,7 @@ const FilterModal = ({
             )}
           </div>
 
-          {/* Property Type - Updated Residential List */}
+          {/* Property Type */}
           <div className="filter-modal__section">
             <button
               className="filter-modal__section-header"
