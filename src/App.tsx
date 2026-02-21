@@ -11,7 +11,7 @@ import ToolsProfile from "./pages/Profiles/ToolsProfile/ToolsProfile";
 import ServiceProfile from "./pages/Profiles/ServiceProfile/ServiceProfile";
 import ToolsForAgents from "./pages/ToolsForAgents/ToolsForAgents";
 import FindRealEstateService from "./pages/FindRealEstateService/FindRealEstateService";
-import PropertiesResults from "./pages/Search/PropertiesResults/PropertiesResults";
+import PropertiesSearch from "./pages/Search/PropertiesSearch/PropertiesSearch";
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
         <Route path="/agency/profile" element={<AgencyProfile />} />
         <Route path="/tools/profile" element={<ToolsProfile />} />
         <Route path="/service/profile" element={<ServiceProfile />} />
-        <Route path="/search/properties" element={<PropertiesResults />} />
+        <Route path="/search/properties" element={<PropertiesSearch />} />
         <Route
           path="/search/services"
           element={<div>Services Results - Coming Soon</div>}
