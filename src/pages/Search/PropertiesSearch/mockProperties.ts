@@ -10,7 +10,7 @@ export type Property = {
   type: "House" | "Apartment" | "Townhouse" | "Land";
   imageUrl?: string;
 
-  // ✅ Add these so URL params can filter properly
+  // Added these so URL params can filter properly
   category: "residential" | "commercial";
   status?: "Sold" | "Leased";
   rentType?: "Residential Rentals" | "Commercial Leasing";

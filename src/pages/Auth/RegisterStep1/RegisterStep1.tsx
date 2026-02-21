@@ -1,203 +1,159 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaApple, FaFacebook } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import {
+  FaHome,
+  FaUserTie,
+  FaBuilding,
+  FaTools,
+  FaWrench,
+  FaBriefcase,
+} from "react-icons/fa";
 import "./RegisterStep1.scss";
-import GoogleIcon from "../../../components/Icons/GoogleIcon";
 
-interface PasswordValidation {
-  hasUpperCase: boolean;
-  hasLowerCase: boolean;
-  hasNumber: boolean;
-  hasSymbol: boolean;
-  hasMinLength: boolean;
+type UserCategory =
+  | "consumer"
+  | "agent"
+  | "agency"
+  | "service"
+  | "tool"
+  | "jobseeker";
+
+interface CategoryOption {
+  id: UserCategory;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
 }
+
+const categories: CategoryOption[] = [
+  {
+    id: "consumer",
+    label: "User / Consumer",
+    description: "Looking to Buy, Sell or Lease property",
+    icon: <FaHome />,
+  },
+  {
+    id: "agent",
+    label: "Real Estate Agent",
+    description: "Individual agent profile",
+    icon: <FaUserTie />,
+  },
+  {
+    id: "agency",
+    label: "Real Estate Agency",
+    description: "Agency/Office profile",
+    icon: <FaBuilding />,
+  },
+  {
+    id: "service",
+    label: "Real Estate Service",
+    description: "Helping you buy, sell and lease property",
+    icon: <FaTools />,
+  },
+  {
+    id: "tool",
+    label: "Real Estate Tool",
+    description: "Business assisting real estate agents/agencies",
+    icon: <FaWrench />,
+  },
+  {
+    id: "jobseeker",
+    label: "Job Seeker",
+    description: "Looking for real estate related jobs",
+    icon: <FaBriefcase />,
+  },
+];
 
 const RegisterStep1 = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectedCategory, setSelectedCategory] = useState<UserCategory | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(false);
 
-  const validatePassword = (password: string): PasswordValidation => ({
-    hasUpperCase: /[A-Z]/.test(password),
-    hasLowerCase: /[a-z]/.test(password),
-    hasNumber: /[0-9]/.test(password),
-    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    hasMinLength: password.length >= 8,
-  });
-
-  const passwordValidation = validatePassword(formData.password);
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (!Object.values(passwordValidation).every(Boolean)) {
-      newErrors.password = "Password does not meet requirements";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
+  const handleCategorySelect = async (categoryId: UserCategory) => {
+    setSelectedCategory(categoryId);
     setIsLoading(true);
-    console.log("Registration step 1:", {
-      email: formData.email,
-      password: formData.password,
-    });
 
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/register/step-2");
-    }, 1000);
+    console.log("Selected category:", categoryId);
+    setIsLoading(false);
+    navigate("register/step-2");
+
+    // setTimeout(() => {
+    //   setIsLoading(false);
+
+    //   switch (categoryId) {
+    //     case "consumer":
+    //       navigate("/consumer/profile");
+    //       break;
+
+    //     case "agent":
+    //       navigate("/agent/profile");
+    //       break;
+
+    //     case "agency":
+    //       navigate("/agency/profile");
+    //       break;
+
+    //     case "service":
+    //       navigate("/service/profile");
+    //       break;
+
+    //     case "tool":
+    //       navigate("/tools/profile");
+    //       break;
+
+    //     case "jobseeker":
+    //       navigate("/jobseeker/profile");
+    //       break;
+
+    //     default:
+    //       navigate("/");
+    //   }
+    // }, 800);
   };
-
-  const handleSocialLogin = (provider: string) => {
-    console.log("Social login with:", provider);
-    // TODO: Implement OAuth flow
-  };
-
-  const allRequirementsMet = Object.values(passwordValidation).every(Boolean);
 
   return (
-    <div className="register-step1">
-      <div className="register-step1__container">
-        <div className="register-step1__header">
-          <h1 className="register-step1__title">Welcome to Buy Sell Lease</h1>
-          <p className="register-step1__subtitle">Create New Account</p>
+    <div className="register-step2">
+      <div className="register-step2__container">
+        <div className="register-step2__header">
+          <h1 className="register-step2__title">Select Your Category</h1>
+          <p className="register-step2__subtitle">
+            Choose how you'll use Buy Sell Lease
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="register-step1__form">
-          <div className="register-step1__field">
-            <label htmlFor="email" className="register-step1__label">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className={`register-step1__input ${errors.email ? "register-step1__input--error" : ""}`}
-              placeholder="Enter email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-            />
-            {errors.email && (
-              <span className="register-step1__error">{errors.email}</span>
-            )}
-          </div>
-
-          <div className="register-step1__field">
-            <label htmlFor="password" className="register-step1__label">
-              Password
-            </label>
-            <div className="register-step1__input-wrapper">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                className={`register-step1__input ${errors.password ? "register-step1__input--error" : ""}`}
-                placeholder="Enter password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-              />
-              <button
-                type="button"
-                className="register-step1__toggle"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-              </button>
-            </div>
-
-            <div className="register-step1__requirements">
-              <p className="register-step1__requirements-title">
-                Password must include:
+        <div className="register-step2__categories">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              className={`register-step2__card ${
+                selectedCategory === category.id
+                  ? "register-step2__card--selected"
+                  : ""
+              }`}
+              onClick={() => handleCategorySelect(category.id)}
+              disabled={isLoading}
+            >
+              <div className="register-step2__icon">{category.icon}</div>
+              <h3 className="register-step2__card-title">{category.label}</h3>
+              <p className="register-step2__card-desc">
+                {category.description}
               </p>
-              <ul className="register-step1__requirements-list">
-                <li className={passwordValidation.hasUpperCase ? "met" : ""}>
-                  Large Caps (A-Z)
-                </li>
-                <li className={passwordValidation.hasLowerCase ? "met" : ""}>
-                  Small Caps (a-z)
-                </li>
-                <li className={passwordValidation.hasNumber ? "met" : ""}>
-                  Numbers (0-9)
-                </li>
-                <li className={passwordValidation.hasSymbol ? "met" : ""}>
-                  Symbol (!@#$...)
-                </li>
-                <li className={passwordValidation.hasMinLength ? "met" : ""}>
-                  8 characters minimum
-                </li>
-              </ul>
-            </div>
-          </div>
 
-          <button
-            type="submit"
-            className="register-step1__submit"
-            disabled={isLoading || !allRequirementsMet}
-          >
-            {isLoading ? "Creating Account..." : "Continue"}
-          </button>
-        </form>
-
-        {/* Divider */}
-        <div className="register-step1__divider">
-          <span>Or connect with:</span>
+              {selectedCategory === category.id && isLoading && (
+                <span className="register-step2__loading">Setting up...</span>
+              )}
+            </button>
+          ))}
         </div>
 
-        {/* Social Login */}
-        <div className="register-step1__social">
-          <button
-            className="register-step1__social-btn register-step1__social-btn--apple"
-            onClick={() => handleSocialLogin("apple")}
-          >
-            <FaApple />
-            <span>Continue with Apple</span>
-          </button>
-
-          <button
-            className="register-step1__social-btn register-step1__social-btn--facebook"
-            onClick={() => handleSocialLogin("facebook")}
-          >
-            <FaFacebook />
-            <span>Continue with Facebook</span>
-          </button>
-
-          <button
-            className="register-step1__social-btn register-step1__social-btn--google"
-            onClick={() => handleSocialLogin("google")}
-          >
-            <GoogleIcon size={20} />
-
-            <span>Continue with Google</span>
-          </button>
-        </div>
-
-        <div className="register-step1__footer">
+        <div className="register-step2__help">
           <p>
-            Already have an account?{" "}
-            <Link to="/sign-in" className="register-step1__link">
-              Sign In
-            </Link>
+            Not sure which to choose?{" "}
+            <span className="register-step2__link">
+              Learn more about categories
+            </span>
           </p>
         </div>
       </div>

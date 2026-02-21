@@ -25,7 +25,7 @@
     color: $text-secondary;
   }
 
-  /* ✅ Chips container for header selections */
+  /* Chips container for header selections */
   &__chips {
     display: flex;
     flex-wrap: wrap;
@@ -148,12 +148,12 @@
     background: $gray-100;
   }
 
-  /* ✅ For header selection chips */
+  /* For header selection chips */
   &--info {
     background: $gray-50;
   }
 
-  /* ✅ For “No selections” */
+  /* For “No selections” */
   &--muted {
     opacity: 0.75;
   }
